@@ -50,12 +50,34 @@ router.patch('/notes/:id', (req, res) => {
 });
 
 router.get('/notes/stats', (req, res) => {
+    const categories = ['Task', 'Random Thought', 'Idea'];
     const notes = NoteService.getAllNotes();
-    const stats = {
-        total: notes.length,
-        activeNotes: notes.filter((note) => !note.archived).length,
-        archivedNotes: notes.filter((note) => note.archived).length
+    interface Stats {
+        totalNotes: number,
+        activeNotes: {
+            totalActiveNotes: number,
+            [category: string]: number
+        },
+        archivedNotes: {
+            totalArchivedNotes: number,
+            [category: string]: number
+        }
+    }
+    const stats: Stats = {
+        totalNotes: notes.length,
+        activeNotes: {
+            totalActiveNotes: notes.filter((note) => !note.archived).length,
+        },
+        archivedNotes: {
+            totalArchivedNotes: notes.filter((note) => note.archived).length
+        }
     };
+    categories.forEach((category) => {
+        category = category.charAt(0).toLowerCase() + category.slice(1);
+        category = category.replace(/\s/g, '');
+        stats.activeNotes[category] = notes.filter((note) => !note.archived && (note.category === category)).length;
+        stats.archivedNotes[category] = notes.filter((note) => note.archived && (note.category === category)).length;
+    });
     res.json(stats);
 });
 
