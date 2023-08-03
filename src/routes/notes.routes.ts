@@ -73,8 +73,6 @@ router.get('/notes/stats', (req, res) => {
         }
     };
     categories.forEach((category) => {
-        category = category.charAt(0).toLowerCase() + category.slice(1);
-        category = category.replace(/\s/g, '');
         stats.activeNotes[category] = notes.filter((note) => !note.archived && (note.category === category)).length;
         stats.archivedNotes[category] = notes.filter((note) => note.archived && (note.category === category)).length;
     });
