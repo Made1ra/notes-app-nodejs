@@ -26,18 +26,28 @@ router.post('/notes', (req, res) => {
 
 router.delete('/notes/:id', (req, res) => {
     const id = req.params.id;
-    NoteService.removeNote(id);
-    res.json({ message: 'Note deleted succesfully.' });
+    const note = NoteService.getNote(id);
+    if (note.length === 0) {
+        res.status(404).json({ message: 'Note not found.' });
+    } else {
+        NoteService.removeNote(id);
+        res.json({ message: 'Note deleted succesfully.' });
+    }
 });
 
 router.patch('/notes/:id', (req, res) => {
     const id = req.params.id;
+    const note = NoteService.getNote(id);
     const editedNote: Note = req.body;
 
     try {
         noteSchema.validateSync(editedNote);
-        NoteService.editNote(id, editedNote);
-        res.json({ message: 'Note updated succesfully.' });
+        if (note.length === 0) {
+            res.status(404).json({ message: 'Note not found.' });
+        } else {
+            NoteService.editNote(id, editedNote);
+            res.json({ message: 'Note updated succesfully.' });
+        }
     } catch (error) {
         if (error instanceof yup.ValidationError) {
             const errors = error.inner.map((err) => ({
