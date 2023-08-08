@@ -31,7 +31,7 @@ router.delete('/notes/:id', (req, res) => {
         res.status(404).json({ message: 'Note not found.' });
     } else {
         NoteService.removeNote(id);
-        res.json({ message: 'Note deleted succesfully.' });
+        res.json({ message: 'Note deleted successfully.' });
     }
 });
 
@@ -46,7 +46,7 @@ router.patch('/notes/:id', (req, res) => {
             res.status(404).json({ message: 'Note not found.' });
         } else {
             NoteService.editNote(id, editedNote);
-            res.json({ message: 'Note updated succesfully.' });
+            res.json({ message: 'Note updated successfully.' });
         }
     } catch (error) {
         if (error instanceof yup.ValidationError) {
